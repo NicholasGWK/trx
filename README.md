@@ -162,6 +162,21 @@ cond({}, state) //=> { key: 'false' }
 
 ```
 
+### logger
+
+Dummy transformer that logs it's input arguments and passes the initialObject back. Generally side effects shouldn't happen inside transformers, but is useful for debugging long chains in createTransformer.
+
+```javascript
+const myTxr = createTransformer(
+  set('key', 'valeu'), //whoops, typo;
+  logger,
+  set('key2', 'value2'),
+  );
+
+  myTxr({})
+  //=> Will console.log intermediate object { key: 'value'};
+```
+
 ### Helpers
 
 These are some convenience functions that can be used as transformer arguments (mostly cond/set) that keep things simple.
@@ -199,19 +214,3 @@ txr(initialObj);
 #### fromState
 
 Like fromInitial, but looks up the path in state.
-
-
-### logger
-
-Dummy transformer that logs it's input arguments and passes the initialObject back. Generally side effects shouldn't happen inside transformers, but is useful for debugging long chains in createTransformer.
-
-```javascript
-const myTxr = createTransformer(
-  set('key', 'valeu'), //whoops, typo;
-  logger,
-  set('key2', 'value2'),
-  );
-
-  myTxr({})
-  //=> Will console.log intermediate object { key: 'value'};
-```
