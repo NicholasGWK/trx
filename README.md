@@ -17,7 +17,7 @@ const state = {
     },
   }
 ```
-And there are already selectors for the first and second props, but I only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
+And there are already selectors for the first and second props, but we only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
 
 ```
 const mySelector = createSelector(
@@ -54,7 +54,7 @@ const result = myTransformer(initialObj, state);
 }
 ```
 
-The full state gets passed to each transformer in the chain. You can also turn a transformer into a selector by provided a "root" selector as the state input, which should define all of the state required for the transformer to work:
+The full state gets passed to each transformer in the chain. You can also turn a transformer into a selector by providing a "root" selector as the state input, which should define all of the state required for the transformer to work:
 
 ```
 const mySelector = (
