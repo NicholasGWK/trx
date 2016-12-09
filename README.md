@@ -17,7 +17,7 @@ const state = {
     },
   }
 ```
-If I already have selectors for first and second, but I only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
+And there are already selectors for the first and second props, but I only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
 
 ```
 const mySelector = createSelector(
@@ -28,7 +28,7 @@ const mySelector = createSelector(
   });
 ```
 
-Although this isn't very hard, you can imagine a scenario where you need state from multiple selectors and need to change all the key names, omit certain props, add new props that are derived from state, in order to get a final object that you can use for an API call etc. This results in a complex, highly coupled, and unreadable "final" selector function.
+Although this isn't overly complex, you can imagine a scenario where you need state from multiple selectors and need to change all the key names, omit certain props, add new props that are derived from state, in order to get a final object that you can use for an API call etc. This results in a complex, highly coupled, and unreadable "final" selector function.
 
 Instead, transformers look like this:
 
@@ -42,11 +42,16 @@ const state = {
   };
 
 const myTransformer = createTransformer(
-    set('first', R.prop('first')),
+    set('one', R.prop('first')),
     set('innerProp', R.path(['second', 'innerProp']))
   );
 
 const result = myTransformer(initialObj, state);
+
+//=> {
+  first: '1',
+  innerProp: 'test',
+}
 ```
 
 The full state gets passed to each transformer in the chain. You can also turn a transformer into a selector by provided a "root" selector as the state input, which should define all of the state required for the transformer to work:
@@ -128,3 +133,82 @@ myKeymapper(initialObj);
   }
 }
 ```
+
+#### omit : List String -> Transformer
+
+Wrapper for R.omit. Will omit keys from the initial object.
+
+```
+const omitter = omit(['one']);
+omitter({ one: 'one', two: 'two'}); //=> { two: 'two'}
+```
+
+### cond : * -> Transformer -> Transformer -> Transformer
+
+Effectively a wrapper for R.cond. Takes a conditional, a true case trx, and a false case trx. Returns a transformer that is just the transformer for the case.
+
+If the conditional is a function, the function will be applied to the state before the appropriate transformer is returned.
+
+```
+const state = { importantFlag: false };
+
+const myCond = cond(
+  R.prop('importantFlag'),
+  set('key', 'true'),
+  set('key', 'false')
+  );
+
+cond({}, state) //=> { key: 'false' }
+
+```
+
+### Helpers
+
+These are some convenience functions that can be used as transformer arguments (mostly cond/set) that keep things simple.
+
+#### pathEqual : String/List String -> * -> (Object -> Boolean)
+
+Takes a dot delimited string, or a path array, and a value. Returns a function that accepts the state, and returns whether the value found at the path equals the input value.
+
+
+```
+const state = { test: 'test '};
+cond(pathEqual('test', 'test'), txr1, txr2)(state)
+//=> Will return txr1
+```
+#### pathNotEqual
+Same as pathEqual, but checks that the value at the path is not equal.
+
+#### fromInitial : String/List String -> Function (default R.identity) -> *
+
+Will lookup the value at the path in initialObject and apply the provided function to it. Useful for setting things from the input object and applying simple changes to the value.
+
+Can take list of strings or dot delimited string for path.
+
+```
+const txr = set('initialVal', fromInitial('test', R.upper);
+const initialObj = { test: 'initial' };
+
+txr(initialObj);
+//=> { initialVal: 'INITIAL' }
+
+```
+
+#### fromState
+
+Like fromInitial, but looks up the path in state.
+
+
+### logger
+
+Dummy transformer that logs it's input arguments and passes the initialObject back. Generally side effects shouldn't happen inside transformers, but is useful for debugging long chains in createTransformer.
+
+```
+const myTxr = createTransformer(
+  set('key', 'valeu'), //whoops, typo;
+  logger,
+  set('key2', 'value2'),
+  );
+
+  myTxr({})
+  //=> Will console.log intermediate object { key: 'value'};
