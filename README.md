@@ -164,7 +164,7 @@ cond({}, state) //=> { key: 'false' }
 
 ### logger
 
-Dummy transformer that logs it's input arguments and passes the initialObject back. Generally side effects shouldn't happen inside transformers, but is useful for debugging long chains in createTransformer.
+Dummy transformer that logs its input arguments and passes the initialObject back. Generally side effects shouldn't happen inside transformers, but is useful for debugging long chains in createTransformer.
 
 ```javascript
 const myTxr = createTransformer(
