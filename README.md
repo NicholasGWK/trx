@@ -17,15 +17,26 @@ const state = {
     },
   }
 ```
-And there are already selectors for the first and second props, but we only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
+And there are already selectors for the first and second props, but we only want the resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
 
 ```javascript
+
+const desiredResult = {
+    first: '1',
+    innerProp: 'test',
+};
+
+const firstSelector = R.prop('first');
+const secondSelector = R.prop('second');
+
 const mySelector = createSelector(
   firstSelector,
   secondSelector,
   (first, second) => {
     return R.merge(first, { inner: R.prop('innerProp', second))
   });
+
+mySelector(state); //=> Outputs desired result
 ```
 
 Although this isn't overly complex, you can imagine a scenario where you need state from multiple selectors and need to change all the key names, omit certain props, add new props that are derived from state, in order to get a final object that you can use for an API call etc. This results in a complex, highly coupled, and unreadable "final" selector function.
@@ -48,10 +59,11 @@ const myTransformer = createTransformer(
 
 const result = myTransformer(initialObj, state);
 
-//=> {
-  first: '1',
-  innerProp: 'test',
-}
+//=>
+// {
+//   first: '1',
+//   innerProp: 'test',
+// }
 ```
 
 The full state gets passed to each transformer in the chain. You can also turn a transformer into a selector by providing a "root" selector as the state input, which should define all of the state required for the transformer to work:
@@ -63,11 +75,19 @@ const mySelector = (
   R.merge
   );
 
-const myTransformer = // same as above
+const myTransformer = createTransformer(
+    set('one', R.prop('first')),
+    set('innerProp', R.path(['second', 'innerProp']))
+  );
 
 const selectorToCallWithState = myTransformer(initialObj, mySelector);
+// => Returns a selector
 
-const selectorToCallWithState(state); // gets same result
+const selectorToCallWithState(state); //=>
+// {
+//   first: '1',
+//   innerProp: 'test',
+}
 ```
 
 ### API
