@@ -16,6 +16,12 @@ const state = {
     innerProp: 'test',
     },
   }
+  
+// we want to transform it to:
+{  
+  one: '1',
+  innerProp: 'test',
+}
 ```
 And there are already selectors for the first and second props, but we only want my resulting object to have first and innerProp, my final, anonymous selector must perform a relatively complex transformation:
 
@@ -49,7 +55,7 @@ const myTransformer = createTransformer(
 const result = myTransformer(initialObj, state);
 
 //=> {
-  first: '1',
+  one: '1',
   innerProp: 'test',
 }
 ```
@@ -57,17 +63,25 @@ const result = myTransformer(initialObj, state);
 The full state gets passed to each transformer in the chain. You can also turn a transformer into a selector by providing a "root" selector as the state input, which should define all of the state required for the transformer to work:
 
 ```javascript
+// Ben: this is a bit comfusing here
 const mySelector = (
   firstSelector,
   secondSelector,
-  R.merge
-  );
+  R.merge,
+);
 
 const myTransformer = // same as above
 
 const selectorToCallWithState = myTransformer(initialObj, mySelector);
 
-const selectorToCallWithState(state); // gets same result
+const selectorToCallWithState(state); // gets same result 
+
+// Ben: I don't understand this example really well.
+* I don't know what is `initialObj`
+* you didn't assign a value to `myTransformer` 
+* you mean selectorToCallWithState(state) === myTransformer(initialObject)
+* Now I know myTransformer, initialObj is from the previous example
+* maybe make each example more independent or just put into one example or ___?
 ```
 
 ### API
