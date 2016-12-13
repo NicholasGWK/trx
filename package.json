@@ -15,5 +15,15 @@
     "mocha": "^3.2.0",
     "sinon": "^1.17.6",
     "webpack": "^1.14.0"
-  }
+  },
+  "name": "trx",
+  "version": "0.1.0",
+  "description": "Package for transforming data from the store after selecting it",
+  "main": "dist/index.js",
+  "repository": {
+    "url": "git@github.com:NicholasGWK/trx",
+    "type": "git"
+  },
+  "author": "Nicholas Kennedy <nick.kennedy@rangle.io>",
+  "license": "MIT"
 }
