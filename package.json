@@ -1,6 +1,10 @@
 {
   "scripts": {
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "build:commonjs": "babel src --out-dir lib",
+    "prebuild": "npm run clean",
+    "build": "npm run build:commonjs",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "ramda": "^0.22.1"
