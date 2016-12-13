@@ -21,7 +21,7 @@
     "webpack": "^1.14.0"
   },
   "name": "trx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Package for transforming data from the store after selecting it",
   "main": "dist/index.js",
   "repository": {
