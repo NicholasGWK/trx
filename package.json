@@ -17,11 +17,10 @@
     "babel-register": "^6.18.0",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "sinon": "^1.17.6",
-    "webpack": "^1.14.0"
+    "sinon": "^1.17.6"
   },
   "name": "trx",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Package for transforming data from the store after selecting it",
   "main": "dist/index.js",
   "repository": {
